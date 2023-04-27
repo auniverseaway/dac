@@ -34,26 +34,50 @@ export default async function init(el) {
 
   const toolbar = await getToolbar(el);
 
-  const editor = createTag('div', { class: 'da-editor' });
+  const editor = createTag('div', { class: 'da-editor', contenteditable: true }, '<p>write something</p>');
   const wrapper = createTag('div', { class: 'da-editor-wrapper' }, [ toolbar, editor ]);
 
   const meta = createTag('div', { class: 'da-meta' });
 
-  await loadScript('/blocks/edit/deps/wysihtml/wysihtml.js');
-  await loadScript('/blocks/edit/deps/wysihtml/wysihtml.all-commands.js');
-  await loadScript('/blocks/edit/deps/wysihtml/wysihtml.table_editing.js');
-  await loadScript('/blocks/edit/deps/wysihtml/wysihtml.toolbar.js');
-  await loadScript('/blocks/edit/deps/wysihtml/advanced_and_extended.js');
+  editor.addEventListener('input', (e) => {
+    console.log(e);
+  });
 
-  const opts = {
-    toolbar,
-    parserRules:  wysihtmlParserRules,
-    useLineBreaks: false
-  };
-  new wysihtml.Editor(editor, opts);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'b' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      const sel = document.getSelection();
+      const range = sel.getRangeAt(0);
+      const strong = document.createElement('strong');
+      range.surroundContents(strong);
+      
+    }
+  });
 
-  const dom = await getContent(window.location.hash.replace('#', ''));
-  editor.append(...dom);
+  document.addEventListener("selectionchange", () => {
+    
+    // console.log(anchorNode);
+    // if (anchorNode.nodeName === 'DIV') {
+    //   const p = createTag('p', {}, anchorNode.innerHTML);
+    //   anchorNode.parentElement.replace(p, anchorNode);
+    // }
+  });
+
+  // await loadScript('/blocks/edit/deps/wysihtml/wysihtml.js');
+  // await loadScript('/blocks/edit/deps/wysihtml/wysihtml.all-commands.js');
+  // await loadScript('/blocks/edit/deps/wysihtml/wysihtml.table_editing.js');
+  // await loadScript('/blocks/edit/deps/wysihtml/wysihtml.toolbar.js');
+  // await loadScript('/blocks/edit/deps/wysihtml/advanced_and_extended.js');
+
+  // const opts = {
+  //   toolbar,
+  //   parserRules:  wysihtmlParserRules,
+  //   useLineBreaks: false
+  // };
+  // new wysihtml.Editor(editor, opts);
+
+  // const dom = await getContent(window.location.hash.replace('#', ''));
+  // editor.append(...dom);
 
   el.append(title, wrapper, meta);
 }
