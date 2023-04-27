@@ -43,14 +43,25 @@ export default async function init(el) {
     console.log(e);
   });
 
+  let bold = 0;
+
   document.addEventListener('keydown', e => {
     if (e.key === 'b' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       const sel = document.getSelection();
+      console.log(sel);
       const range = sel.getRangeAt(0);
-      const strong = document.createElement('strong');
-      range.surroundContents(strong);
-      
+      const commonAncestor = range.commonAncestorContainer;
+      if (commonAncestor.nodeName === 'STRONG') {
+        const content = commonAncestor.innerHTML;
+        commonAncestor.insertAdjacentHTML('afterend', content);
+        commonAncestor.remove();
+        
+      } else {
+        const strong = document.createElement('strong');
+        range.surroundContents(strong);
+        range.selectNodeContents(strong);
+      }
     }
   });
 
