@@ -1,4 +1,4 @@
 mountpoints:
   /:
-    url: https://content.da.live/auniverseaway/da/
+    url: https://das.chris4303.workers.dev/
     type: markup
